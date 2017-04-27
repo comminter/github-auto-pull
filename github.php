@@ -25,18 +25,18 @@ $remoteIP = $_SERVER['REMOTE_ADDR'];
 $msg	  = 'Request came from '.$remoteIP.' - http://whois.arin.net/rest/ip/'.$remoteIP;
 $headers  = 'From: '.$from.' <'.$from.'@github.com>';
 
-
 if (isset($_GET['update'])) {
 
 	// We want to update the folder with the latest from the repo
 
 	$check = md5(crypt($_GET['update'], $salt));
+	$git_rev=shell_exec('git rev-list --full-history --all --abbrev-commit | head -1');
+	echo $git_rev;
 
 	if ($pass === $check) {
 
 		// what does the pull
-		$output = shell_exec('git pull');
-
+		$output = shell_exec('git pull origin master');
 		if ( $output && $email ) {
 			// Email to say it's successful
 			mail($email, '['.$projectName.'] `git pull`', $output."\r\n".$msg, $headers);
